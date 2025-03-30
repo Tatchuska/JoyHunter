@@ -305,10 +305,10 @@ if not start_game:
     pygame.mixer_music.load('./asset/Menu.mp3')
     pygame.mixer_music.set_volume(0.1)
     pygame.mixer_music.play(-1)
-else:
-    pygame.mixer_music.load(f'./asset/Level1/Level1.mp3')
-    pygame.mixer_music.set_volume(0.1)
-    pygame.mixer_music.play(-1)
+# else:
+#     pygame.mixer_music.load(f'./asset/Level1/Level1.mp3')
+#     pygame.mixer_music.set_volume(0.1)
+#     pygame.mixer_music.play(-1)
 
 menu_option = 0
 # Game Loop
@@ -342,8 +342,8 @@ while run:
                 draw_text("Joy", font_title, GREEN, 30, 30)
                 draw_text("Hunter", font_title, GREEN, 50, 80)
                 for i in range(len(MENU_OPTION)):
-                    color = ORANGE if i == menu_option else WHITE
-                    draw_text(MENU_OPTION[i], font_menu, color, 30, 160 + i * 50)
+                    color = WHITE if i == menu_option else GREEN
+                    draw_text(MENU_OPTION[i], font_menu, color, 50, 150 + i * 35)
                 
                 pygame.display.flip()
     else:
