@@ -1,22 +1,19 @@
+import sys
+
 import pygame
 import os
 import random
+from code.Const import *
+
 
 pygame.init()
 
 clock = pygame.time.Clock()
-FPS = 60
 
-# Define Game variables
-GRAVITY = 0.6 # Constant in Python is indicated by upper case
-SCREEN_WIDTH = 576
-SCREEN_HEIGHT = 324
-SCROLL_LIMIT = 200
-TILE_SIZE = 30
-screen_scroll = 0
-bg_scroll = 0
-ground_height = 92
-
+# Define font
+font_game = pygame.font.SysFont('Lucida Sans Typewriter', 25)
+font_menu = pygame.font.SysFont('Lucida Sans Typewriter', 35)
+font_title = pygame.font.SysFont('Lucida Sans Typewriter', 75)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Joy Hunter")
@@ -26,7 +23,6 @@ moving_left = False
 moving_right = False
 
 # Load Images
-
 # Background
 bg_images = []
 for i in range(0,6):
@@ -37,6 +33,13 @@ bg_width = bg_images[0].get_width()
 # Health
 heart_img = pygame.image.load("./asset/heart.png").convert_alpha()
 heart_img = pygame.transform.scale(heart_img, (int(heart_img.get_width() / 1.5), int(heart_img.get_height() / 1.5)))
+
+# Box
+box_img = pygame.image.load("./asset/Item/box.png").convert_alpha()
+box_img = pygame.transform.scale(box_img, (int(box_img.get_width() / 4), int(box_img.get_height() / 4)))
+
+# Menu
+menu_bg = pygame.image.load("./asset/Menu/bg.png").convert_alpha()
 
 # Crystals
 yellow_img = pygame.image.load("./asset/Item/0.png").convert_alpha()
@@ -51,15 +54,6 @@ crystals = {
     'Red'  : red_img,
 }
 
-# Define colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
-
-# Define font
-font = pygame.font.SysFont('Roboto Mono', 25)
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -71,6 +65,7 @@ def draw_bg():
         for j in bg_images:
             screen.blit(j, ((i * bg_width) - bg_scroll * speed, 0))
             speed += 0.2
+
 
 class Animal(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed):
@@ -239,11 +234,14 @@ class Animal(pygame.sprite.Sprite):
         if not self.alive:
             self.speed = 0
             self.update_action(5)
+            game_over_text = font_title.render("GAME OVER", True, RED)
+            press_esc_text = font_game.render("PRESS ESC", True, WHITE)
+            screen.blit(game_over_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50))
+            screen.blit(press_esc_text, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2))
 
 
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
-
 
 
 class Crystal(pygame.sprite.Sprite):
@@ -269,140 +267,122 @@ class Crystal(pygame.sprite.Sprite):
             self.kill()
         self.rect.x += screen_scroll
 
+class Box(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = box_img
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+    def update(self):
+        # Check if the player had picked up the crystal
+        if pygame.sprite.collide_rect(self, player):
+            player.speed = 0
+            win_text = font_title.render("YOUR WIN!", True, WHITE)
+            screen.blit(win_text, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 50))
+        self.rect.x += screen_scroll
+    
+    def draw(self):
+        screen.blit(self.image, self.rect)
 
 # Create sprite groups
 enemy_group = pygame.sprite.Group()
 crystal_group = pygame.sprite.Group()
 
-# Create crystals
-crystal = Crystal('Blue', 350, 150)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 400, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Yellow', 450, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 500, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 550, 150)
-crystal_group.add(crystal)
-
-crystal = Crystal('Blue', 800, 120)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 850, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Yellow', 900, 80)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 950, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1000, 120)
-crystal_group.add(crystal)
-
-crystal = Crystal('Blue', 1200, 150)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1225, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Red', 1250, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1275, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1300, 150)
-crystal_group.add(crystal)
-
-crystal = Crystal('Blue', 1500, 150)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1550, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Yellow', 1600, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1650, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 1700, 150)
-crystal_group.add(crystal)
-
-crystal = Crystal('Blue', 2000, 150)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2025, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Yellow', 2050, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2075, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2100, 150)
-crystal_group.add(crystal)
-
-crystal = Crystal('Blue', 2400, 150)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2450, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Yellow', 2500, 100)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2550, 125)
-crystal_group.add(crystal)
-crystal = Crystal('Blue', 2600, 150)
-crystal_group.add(crystal)
-
-
+for crystal_type, x, y in crystal_data:
+    crystal_group.add(Crystal(crystal_type, x, y))
+    
+for char_type, x, y, scale, speed in enemy_data:
+    enemy_group.add(Animal(char_type, x, y, scale, speed))
 
 
 player = Animal('Cat', 100, SCREEN_HEIGHT - ground_height, 1.5, 4)
-enemy = Animal('Dog', 400, SCREEN_HEIGHT - ground_height, 1.5, 2)
-enemy_group.add(enemy)
-enemy = Animal('Dog', 2450, SCREEN_HEIGHT - ground_height, 1.5, 2)
-enemy_group.add(enemy)
-enemy = Animal('Dog', 1050, SCREEN_HEIGHT - ground_height, 1.5, 2)
-enemy_group.add(enemy)
-enemy = Animal('Dog', 1800, SCREEN_HEIGHT - ground_height, 1.5, 2)
-enemy_group.add(enemy)
-enemy = Animal('Dog', 2300, SCREEN_HEIGHT - ground_height, 1.5, 2)
-enemy_group.add(enemy)
-enemy = Animal('Hound', 800, SCREEN_HEIGHT - ground_height, 1.75, 3)
-enemy_group.add(enemy)
-enemy = Animal('Hound', 1250, SCREEN_HEIGHT - ground_height, 1.75, 3)
-enemy_group.add(enemy)
-enemy = Animal('Hound', 2050, SCREEN_HEIGHT - ground_height, 1.75, 3)
-enemy_group.add(enemy)
+box = Box(2800, SCREEN_HEIGHT - ground_height + 10)
 
-pygame.mixer_music.load(f'./asset/Level1/Level1.mp3')
-pygame.mixer_music.set_volume(0.1)
-pygame.mixer_music.play(-1)
+# Load music
 
+if not start_game:
+    pygame.mixer_music.load('./asset/Menu.mp3')
+    pygame.mixer_music.set_volume(0.1)
+    pygame.mixer_music.play(-1)
+else:
+    pygame.mixer_music.load(f'./asset/Level1/Level1.mp3')
+    pygame.mixer_music.set_volume(0.1)
+    pygame.mixer_music.play(-1)
+
+menu_option = 0
 # Game Loop
 run = True
 while run:
     clock.tick(FPS)
 
-    # Draw World
-    draw_bg()
+    if not start_game:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    menu_option = (menu_option + 1) % len(MENU_OPTION)
+                if event.key == pygame.K_UP:
+                    menu_option = (menu_option - 1) % len(MENU_OPTION)
+                if event.key == pygame.K_RETURN:
+                    if MENU_OPTION[menu_option] == "START GAME":
+                        start_game = True
+                        pygame.mixer_music.stop()
+                        pygame.mixer_music.load('./asset/Level1/Level1.mp3')
+                        pygame.mixer_music.set_volume(0.1)
+                        pygame.mixer_music.play(-1)
+                    else:
+                        pygame.quit()
+                        sys.exit()
+            
+            if not start_game:
+                screen.blit(menu_bg, (0, 0))
+                draw_text("Joy", font_title, GREEN, 30, 30)
+                draw_text("Hunter", font_title, GREEN, 50, 80)
+                for i in range(len(MENU_OPTION)):
+                    color = ORANGE if i == menu_option else WHITE
+                    draw_text(MENU_OPTION[i], font_menu, color, 30, 160 + i * 50)
+                
+                pygame.display.flip()
+    else:
+        # Draw World
+        draw_bg()
+        # Show Score
+        draw_text(f'SCORE: {player.score}', font_game, YELLOW, 10, 35)
+        # Show Health
+        draw_text('HEALTH: ', font_game, WHITE, 10, 10)
+        for x in range(player.health):
+            screen.blit(heart_img, (90 + (x * 20), 10))
+    
+        # player.collision()
+        player.update()
+        player.draw()
+        
+        for enemy in enemy_group:
+            enemy.ai()
+            enemy.update_animation()
+            enemy.draw()
+        
+        box.update()
+        box.draw()
+    
+        # Update and draw groups
+        crystal_group.update()
+        crystal_group.draw(screen)
 
-    # Show Score
-    draw_text(f'SCORE: {player.score}', font, YELLOW, 10, 35)
-    # Show Health
-    draw_text('HEALTH: ', font, WHITE, 10, 10)
-    for x in range(player.health):
-        screen.blit(heart_img, (90 + (x * 20), 10))
-
-    # player.collision()
-    player.update()
-    player.draw()
-    for enemy in enemy_group:
-        enemy.ai()
-        enemy.update_animation()
-        enemy.draw()
-
-    # Update and draw groups
-    crystal_group.update()
-    crystal_group.draw(screen)
-
-    # Update player actions
-    if player.alive:
-        if player.is_in_air:
-            player.update_action(2) # 2 = Jump
-        elif moving_left or moving_right:
-            player.update_action(1) # 1 = Run
-        else:
-            player.update_action(0) # 0 = Idle
-    screen_scroll = player.move(moving_left, moving_right)
-    bg_scroll -= screen_scroll
+        # Update player actions
+        if player.alive:
+            if player.is_in_air:
+                player.update_action(2) # 2 = Jump
+            elif moving_left or moving_right:
+                player.update_action(1) # 1 = Run
+            else:
+                player.update_action(0) # 0 = Idle
+        
+        screen_scroll = player.move(moving_left, moving_right)
+        bg_scroll -= screen_scroll
 
 
     # Events
@@ -419,7 +399,8 @@ while run:
             if event.key == pygame.K_SPACE and player.alive:
                 player.jump = True
             if event.key == pygame.K_ESCAPE:
-                run = False
+                pygame.quit()
+                sys.exit()
 
         # Keyboard button released
         if event.type == pygame.KEYUP:
