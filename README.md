@@ -1,6 +1,6 @@
-# 🕹️ 2D Pixel Art Game Demo
+# 🕹️ Joy Hunter
 
-Welcome to my **2D Pixel Art Game Demo**, a project created with **Python** and **Pygame** as part of a college assignment. This game was entirely developed by me, combining my passion for game development, design, and storytelling. It's a simple yet exciting experience that reflects both my creativity and technical learning journey.
+Welcome to **Joy Hunter** - my 2D Pixel Art Game Demo, a project created with **Python** and **Pygame** as part of a college assignment. This game was entirely developed by me, it's a simple yet exciting experience that reflects my technical learning journey.
 
 ## 🎮 Game Features
 
@@ -16,17 +16,20 @@ Welcome to my **2D Pixel Art Game Demo**, a project created with **Python** and 
 
 Want to see the game in action? Check out the gameplay demo below!
 
-> _Insert your YouTube or video link here_
+
+
+https://github.com/user-attachments/assets/485c655f-423b-4329-9ffb-3cd5ebe444d3
+
+
 
 ## 🎨 Assets & Credits
 
 A huge thanks to the artists and creators who provided the pixel art and audio assets used in this game. All assets are credited appropriately and used under their respective licenses.
 
-- [Animals] (https://craftpix.net/freebies/free-street-animal-pixel-art-asset-pack/)
-- Background: https://craftpix.net/freebies/forest-and-trees-free-pixel-backgrounds/
-- Items: https://craftpix.net/freebies/free-crystals-2d-game-items/
-- Music Menu:
-- Music Game:
+- [Animals](https://craftpix.net/freebies/free-street-animal-pixel-art-asset-pack/)
+- [Background](https://craftpix.net/freebies/forest-and-trees-free-pixel-backgrounds/)
+- [Items](https://craftpix.net/freebies/free-crystals-2d-game-items/)
+- [Music](https://opengameart.org/content/town-theme-rpg)
 
 ## 🧠 Behind the Scenes
 
